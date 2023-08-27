@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Username Pattern Generator</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			background-color: #f0f0f0;
+		}
+
+		.container {
+			text-align: center;
+			background-color: #fff;
+			border-radius: 8px;
+			padding: 20px;
+			box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+			width: 80%;
+			transition: max-height 0.3s ease;
+		}
+
+		.container p {
+			transition: opacity 0.5s ease;
+		}
+
+		@media screen and (max-width: 600px) {
+			.container {
+				width: 100%;
+				border-radius: 0;
+			}
+		}
+
+		.btn-container {
+			margin-top: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container" id="container">
+
+		<h2>Username Pattern Generator</h2>
+
+		<label for="baseString">Enter the base string:</label>
+		<input type="text" id="baseString" placeholder="Base string..." />
+		<div class="btn-container">
+			<button id="copyButton">Copy All</button>
+		</div>
+		<p id="patternOutput"></p>
+	</div>
+
+	<script>
+		const generatePattern = (baseString) => {
+			let pattern = '';
+
+			for (let i = 1; i < 100; i++) {
+				pattern += `@${baseString}${i.toString().padStart(2, '0')} `;
+			}
+
+			const letters = 'qwertyuiopasdfghjklzxcvbnm';
+			for (const char of letters) {
+				pattern += `@${baseString}${char} `;
+			}
+
+			const alphanumeric = '1234567890' + letters;
+			for (const char1 of alphanumeric) {
+				for (const char2 of alphanumeric) {
+					pattern += `@${baseString}${char1}${char2} `;
+				}
+			}
+
+			return pattern.trim();
+		};
+
+		const container = document.getElementById('container');
+		const baseStringInput = document.getElementById('baseString');
+		const copyButton = document.getElementById('copyButton');
+		baseStringInput.addEventListener('input', () => {
+
+			const baseString = document.getElementById('baseString').value;
+			const pattern = generatePattern(baseString);
+			const patternOutput = document.getElementById('patternOutput');
+			patternOutput.style.opacity = 0;
+			patternOutput.textContent = pattern;
+			setTimeout(() => {
+				patternOutput.style.opacity = 1;
+			}, 500);
+			const updatedHeight = container.scrollHeight + 'px';
+			container.style.maxHeight = updatedHeight;
+		});
+
+		copyButton.addEventListener('click', () => {
+			const patternOutput = document.getElementById('patternOutput');
+			const range = document.createRange();
+			range.selectNode(patternOutput);
+			window.getSelection().removeAllRanges();
+			window.getSelection().addRange(range);
+			document.execCommand('copy');
+			window.getSelection().removeAllRanges();
+			copyButton.textContent = 'Copied!';
+			setTimeout(() => {
+				copyButton.textContent = 'Copy All';
+			}, 1500);
+		});
+	</script>
+</body>
+
+</html>
